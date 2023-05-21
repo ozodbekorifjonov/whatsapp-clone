@@ -10,6 +10,7 @@ const StyleCustomChat = styled.div`
   align-items: flex-start;
   padding: 16px 24px;
   overflow: hidden;
+  box-sizing: border-box;
 `;
 
 function ChatCustomStyle({ children }) {

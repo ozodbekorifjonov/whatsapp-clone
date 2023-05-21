@@ -2,11 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Providers from './store/provider';
+import { IntlProvider } from 'react-intl';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Providers>
+      <IntlProvider messages={{}} locale="en" defaultLocale="en">
+        <App />
+      </IntlProvider>
+    </Providers>
   </React.StrictMode>
 );
 

@@ -1,16 +1,24 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Chat from './pages/chat';
 import ErrorPage from './pages/error-page';
-import SignIn from './pages/sign-in';
+import Login from './pages/login';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Chat />,
+    element: <Navigate replace to="/chat" />,
     errorElement: <ErrorPage />,
   },
   {
-    path: '/sign-in',
-    element: <SignIn />,
+    path: '/chat',
+    element: <Chat />,
+  },
+  {
+    path: '/chat/:id',
+    element: <Chat />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
   },
 ]);

@@ -1,8 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import currentUserImg from '../../assets/images/current-user.png';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import ProfileUserAvatar from '../../assets/images/profile-user.png';
 import Icon from '../../assets/icons/Icon';
 import styled from 'styled-components';
+import { debounceFunction } from '../../helper/debounceFunction';
+import { SEARCH_DELAY } from '../../constants';
 
 const StyledChatBarHeader = styled.div`
   .d-flex {
@@ -24,6 +26,13 @@ const StyledChatBarHeader = styled.div`
         }
       }
     }
+
+    .right-box {
+      h4 {
+        cursor: pointer;
+        font-weight: 500;
+      }
+    }
   }
 
   .search-form {
@@ -42,7 +51,7 @@ const StyledChatBarHeader = styled.div`
           border-radius: 24px 0 0 24px;
           padding: 12.5px 0 12px 16px;
           background-color: #ffffff;
-          
+
           img {
             width: 20px;
             height: 20px;
@@ -73,12 +82,41 @@ const StyledChatBarHeader = styled.div`
 `;
 
 function ChatBarHeader() {
+  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchVal, setSearchVal] = useState(searchParams.get('search'));
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
+
+  const handleSearchQuery = useCallback(
+    (nextValue) => {
+      if (nextValue) navigate(`${pathname}?search=${nextValue}`);
+      if (nextValue === '') navigate(`/chat`);
+    },
+    [navigate]
+  );
+
+  const customDebounce = useMemo(
+    () => debounceFunction((nextValue) => handleSearchQuery(nextValue), SEARCH_DELAY),
+    [handleSearchQuery]
+  );
+
+  const handleChange = (event) => {
+    const nextValue = event.target.value;
+    customDebounce(nextValue);
+  };
+
+  const logOut = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
+
   return (
     <StyledChatBarHeader>
       <div className="d-flex">
         <div className="left-box">
           <Link to={'/'} className="current-user-link">
-            <img src={currentUserImg} alt="current-user" className="current-user" />
+            <img src={ProfileUserAvatar} alt="current-user" className="current-user" />
           </Link>
           <Link to={'/'}>
             <Icon type="refresh" />
@@ -86,17 +124,22 @@ function ChatBarHeader() {
         </div>
         <div className="right-box">
           <div>
-            <Icon type="arrowDown" />
+            <h4 onClick={logOut}>log out</h4>
           </div>
         </div>
       </div>
       <div className="search-form">
-        <form action="">
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="form-control">
             <div className="search-box">
               <Icon type="search" />
             </div>
-            <input type="text" placeholder="Search or start a new chat" />
+            <input
+              onChange={handleChange}
+              defaultValue={searchVal}
+              type="text"
+              placeholder="Search or start a new chat"
+            />
           </div>
         </form>
       </div>
