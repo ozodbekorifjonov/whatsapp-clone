@@ -38,7 +38,7 @@ function useProvideContact() {
       toast.error(error.message);
       setLoading(false);
     }
-  }, []);
+  }, [idInstance, apiTokenInstance]);
 
   const getChatHistory = useCallback(async (chatId) => {
     try {
@@ -51,7 +51,7 @@ function useProvideContact() {
 
       setLoading(false);
     }
-  }, []);
+  }, [idInstance, apiTokenInstance]);
 
   const sendTextMessage = useCallback(async (chatId, message) => {
     try {
@@ -62,7 +62,7 @@ function useProvideContact() {
       toast.error(error.message);
       setLoading(false);
     }
-  }, []);
+  }, [idInstance, apiTokenInstance]);
 
   return {
     isLoading,
